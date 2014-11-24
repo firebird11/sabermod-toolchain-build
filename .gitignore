@@ -5,8 +5,5 @@
 *.save
 
 # Test scripts
-arm-androideabi-4.9
 arm-eabi-5.0
 all-5.0
-i686-linux-4.9
-i686-linux-android-4.9

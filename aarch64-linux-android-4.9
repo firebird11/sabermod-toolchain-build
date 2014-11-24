@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Copyright (C) 2014 The SaberMod Project
+# This file is free software; The SaberMod Project
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+###########################################################################
+###########################################################################
+#####
+#####  C O N F I G U R A T I O N
+#####
+###########################################################################
+###########################################################################
+
+panic ()
+{
+    echo "ERROR: $@"
+    exit 1
+}
+
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01';
+
+# Make sure gcc is on the right remote branch 4.9.x
+cd ../gcc/gcc-SaberMod && git fetch sm 4.9.3 && git checkout FETCH_HEAD && cd ../../build;
+
+# Try to parallelize the build for faster performance.
+JOBS="$(cat /proc/cpuinfo | grep -c processor)";
+
+# Determine Make flags
+MAKE_FLAGS=-j"$JOBS"
+
+# Make a clean build
+if [ -e Makefile ];
+then
+    make $MAKE_FLAGS clean;
+    make $MAKE_FLAGS distclean;
+fi;
+
+# Remove all untracked files and directories in git
+if [ -d expat-2.0.1 ];
+then
+    rm -rf expat-2.0.1;
+fi;
+if [ -d gmp-gnu ];
+then
+    rm -rf gmp-gnu;
+fi;
+if [ -d ../isl/isl-0.13/autom4te.cache ];
+then
+    rm -rf ../isl/isl-0.13/autom4te.cache;
+fi;
+if [ -d ../cloog/cloog-0.18.2/isl/autom4te.cache ];
+then
+    rm -rf ../cloog/cloog-0.18.2/isl/autom4te.cache;
+fi;
+if [ -d ../cloog/cloog-0.18.2/osl/autom4te.cache ];
+then
+    rm -rf ../cloog/cloog-0.18.2/osl/autom4te.cache;
+fi;
+
+export PREFIX_PATH=~/tmp/aarch64-linux-android-4.9;
+export PREFIX=--prefix=$PREFIX_PATH;
+
+if [ -d "$PREFIX_PATH" ];
+then
+    rm -rf $PREFIX_PATH;
+    mkdir -p $PREFIX_PATH;
+else
+    mkdir -p $PREFIX_PATH;
+fi;
+
+#Build Configuration
+./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.0_android-graphite' --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=gnu --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp;
+
+#Build the toolchain
+make $MAKE_FLAGS;
+
+#Install the toolchain (twice)
+make install && make install;
+
+GCC_INSTALLED=$PREFIX_PATH/bin/aarch64-linux-android-gcc;
+
+# Did we make it?
+if [ -e $GCC_INSTALLED ];
+then
+    echo "";
+else
+    ./build-failed;
+fi;
+
+cd ../build-scripts;
+
