@@ -75,6 +75,8 @@ else
     mkdir -p $PREFIX_PATH;
 fi;
 
+# sysroot
+cd ../sysroot && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
 export SYSROOT_DEST_PATH=$PREFIX_PATH;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
