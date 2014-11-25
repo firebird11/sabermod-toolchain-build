@@ -75,8 +75,15 @@ else
     mkdir -p $PREFIX_PATH;
 fi;
 
+# sysroot
+cd ../sysroot && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
+export SYSROOT_SRC_PATH=../sysroot/arch-arm;
+export SYSROOT_DEST_PATH=$PREFIX_PATH;
+cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
+export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
+
 #Build Configuration
-./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.2_android-graphite' --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=gnu --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp;
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.4_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --disable-libmudflap --disable-libquadmath;
 
 #Build the toolchain
 make $MAKE_FLAGS;
