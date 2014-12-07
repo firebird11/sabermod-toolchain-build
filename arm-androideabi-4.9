@@ -83,7 +83,7 @@ cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
 
 #Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --disable-libsanitizer --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;;
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --disable-libsanitizer --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
 
 #Build the toolchain
 make $MAKE_FLAGS;
