@@ -86,7 +86,7 @@ else
 fi;
 
 # Copy these over to make lollipop happy
-cd ../sysroot && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
+cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC=../sysroot/arch-x86_64;
 export SYSROOT_DEST=$PREFIX_PATH/sysroot;
 cp -R $SYSROOT_SRC -f $SYSROOT_DEST;

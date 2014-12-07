@@ -27,7 +27,7 @@ panic ()
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01';
 
 # Make sure gcc is on the right remote branch 4.8.x
-cd ../gcc/gcc-SaberMod && git fetch sm 4.8.4 && git checkout FETCH_HEAD && cd ../../build;
+cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch sm 4.8.4 && git checkout FETCH_HEAD && cd ../../build;
 
 # Try to parallelize the build for faster performance.
 JOBS="$(cat /proc/cpuinfo | grep -c processor)";
@@ -76,14 +76,14 @@ else
 fi;
 
 # sysroot
-cd ../sysroot && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
+cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
 export SYSROOT_DEST_PATH=$PREFIX_PATH;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
 
 #Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.4_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp;
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.4_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
 
 #Build the toolchain
 make $MAKE_FLAGS;
