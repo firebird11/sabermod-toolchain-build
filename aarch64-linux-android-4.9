@@ -52,18 +52,6 @@ if [ -d gmp-gnu ];
 then
     rm -rf gmp-gnu;
 fi;
-if [ -d ../isl/isl-0.13/autom4te.cache ];
-then
-    rm -rf ../isl/isl-0.13/autom4te.cache;
-fi;
-if [ -d ../cloog/cloog-0.18.2/isl/autom4te.cache ];
-then
-    rm -rf ../cloog/cloog-0.18.2/isl/autom4te.cache;
-fi;
-if [ -d ../cloog/cloog-0.18.2/osl/autom4te.cache ];
-then
-    rm -rf ../cloog/cloog-0.18.2/osl/autom4te.cache;
-fi;
 
 export PREFIX_PATH=~/tmp/aarch64-linux-android-4.9;
 export PREFIX=--prefix=$PREFIX_PATH;
@@ -84,7 +72,7 @@ cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm64;
 
 #Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --enable-ld=default --disable-gold --enable-plugins --enable-threads --disable-option-checking --disable-bootstrap --disable-libmudflap --disable-libquadmath --disable-libsanitizer --disable-libgomp --enable-initfini-array --enable-eh-frame-hdr-for-static --enable-fix-cortex-a53-835769 --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm';
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --enable-ld=default --disable-gold --enable-plugins --enable-threads --disable-option-checking --disable-bootstrap --disable-libmudflap --disable-libquadmath --disable-libsanitizer --disable-libgomp --enable-initfini-array --enable-eh-frame-hdr-for-static --enable-fix-cortex-a53-835769 --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm';
 
 #Build the toolchain
 make $MAKE_FLAGS;
