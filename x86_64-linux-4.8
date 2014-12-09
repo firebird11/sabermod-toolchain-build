@@ -61,18 +61,6 @@ if [ -e "../binutils/binutils-gnu/ld/scripttempl/avatar490798_7.gif" ];
 then
     rm -f "../binutils/binutils-gnu/ld/scripttempl/avatar490798_7.gif";
 fi;
-if [ -d ../isl/isl-0.13/autom4te.cache ];
-then
-    rm -rf ../isl/isl-0.13/autom4te.cache;
-fi;
-if [ -d ../cloog/cloog-0.18.2/isl/autom4te.cache ];
-then
-    rm -rf ../cloog/cloog-0.18.2/isl/autom4te.cache;
-fi;
-if [ -d ../cloog/cloog-0.18.2/osl/autom4te.cache ];
-then
-    rm -rf ../cloog/cloog-0.18.2/osl/autom4te.cache;
-fi;
 
 export PREFIX_PATH=~/tmp/x86_64-linux-4.8;
 export PREFIX=--prefix=$PREFIX_PATH;
@@ -85,7 +73,7 @@ else
     mkdir -p $PREFIX_PATH
 fi;
 
-./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=gnu-stable --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --disable-libmudflap --disable-libatomic --disable-libsanitizer --disable-libquadmath --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
+./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=gnu-stable --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
 
 # Build the toolchain
 make $MAKE_FLAGS;
