@@ -85,16 +85,7 @@ else
     mkdir -p $PREFIX_PATH
 fi;
 
-# Copy these over to make lollipop happy
-cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
-export SYSROOT_SRC=../sysroot/arch-x86_64;
-export SYSROOT_DEST=$PREFIX_PATH/sysroot;
-cp -R $SYSROOT_SRC -f $SYSROOT_DEST;
-export CXX_SRC=../sysroot/x86_64-linux;
-export CXX_DEST=$PREFIX_PATH/x86_64-linux;
-cp -R $CXX_SRC -f $CXX_DEST;
-
-./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=gnu-stable --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --disable-libmudflap --disable-libatomic --disable-libsanitizer --disable-libquadmath;
+./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=gnu-stable --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.2 --with-isl-version=0.13 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --disable-libmudflap --disable-libatomic --disable-libsanitizer --disable-libquadmath --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
 
 # Build the toolchain
 make $MAKE_FLAGS;
