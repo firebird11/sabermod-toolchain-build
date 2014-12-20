@@ -66,12 +66,12 @@ fi;
 # sysroot
 cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.8 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
-export SYSROOT_DEST_PATH=$PREFIX_PATH;
+export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
-export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
+export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH;
 
 #Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.4_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.4_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libgomp --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++;
 
 #Build the toolchain
 make $MAKE_FLAGS;
