@@ -72,9 +72,9 @@ export GCC_INSTALLED=$PREFIX_PATH/bin/arm-linux-androideabi-gcc;
 # sysroot
 cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
-export SYSROOT_DEST_PATH=$PREFIX_PATH;
+export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
-export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
+export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH;
 
 #Build Configuration
 ./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --disable-libsanitizer --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap;
@@ -82,11 +82,11 @@ export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
 # Build and install cloog and isl libraries into the toolchain sysroot environment.
 
 # CLOOG
-export PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
-export PREFIX=--prefix=$PREFIX_PATH;
+export CLOOG_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
+export CLOOG_PREFIX=--prefix=$CLOOG_PREFIX_PATH;
 
 cd ../cloog/cloog-$SET_CLOOG_VERSION;
-./configure $PREFIX;
+./configure $CLOOG_PREFIX;
 
 make $MAKE_FLAGS;
 make install;
@@ -96,8 +96,11 @@ make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
 
 # ISL
 
+export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
+export ISL_PREFIX=--prefix=$ISL_PREFIX_PATH;
+
 cd ../../isl/isl-$SET_ISL_VERSION;
-./configure $PREFIX;
+./configure $ISL_PREFIX;
 
 make $MAKE_FLAGS;
 make install;
