@@ -93,7 +93,7 @@ make $MAKE_FLAGS;
 make install;
 
 # cleanup
-rm -rf * && git reset --hard;
+make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
 
 # ISL
 
@@ -104,7 +104,7 @@ make $MAKE_FLAGS;
 make install;
 
 # cleanup
-rm -rf * && git reset --hard;
+make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
 
 # make libs available for ld and cc
 export SYSROOT_LIB_PATH=$PREFIX_PATH/lib;
