@@ -99,12 +99,14 @@ rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.
 
 git reset --hard;
 
+cd isl && git reset --hard;
+
 # ISL
 
 export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
 export ISL_PREFIX=--prefix=$ISL_PREFIX_PATH;
 
-cd ../../isl/isl-$SET_ISL_VERSION;
+cd ../../../isl/isl-$SET_ISL_VERSION;
 ./configure $ISL_PREFIX;
 
 make $MAKE_FLAGS;

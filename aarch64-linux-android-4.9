@@ -83,11 +83,11 @@ export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH;
 # Build and install cloog and isl libraries into the toolchain sysroot environment.
 
 # CLOOG
-export PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
-export PREFIX=--prefix=$PREFIX_PATH;
+export CLOOG_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
+export CLOOG_PREFIX=--prefix=$CLOOG_PREFIX_PATH;
 
 cd ../cloog/cloog-$SET_CLOOG_VERSION;
-./configure $PREFIX;
+./configure $CLOOG_PREFIX;
 
 make $MAKE_FLAGS;
 make install;
@@ -100,10 +100,15 @@ rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.
 
 git reset --hard;
 
+cd isl && git reset --hard;
+
 # ISL
 
-cd ../../isl/isl-$SET_ISL_VERSION;
-./configure $PREFIX;
+export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
+export ISL_PREFIX=--prefix=$ISL_PREFIX_PATH;
+
+cd ../../../isl/isl-$SET_ISL_VERSION;
+./configure $ISL_PREFIX;
 
 make $MAKE_FLAGS;
 make install;
