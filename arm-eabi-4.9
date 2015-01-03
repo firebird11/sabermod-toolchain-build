@@ -24,10 +24,14 @@ panic ()
     exit 1
 }
 
+# Some predefined configurations
+export SET_GCC_VERSION=4.9.3;
+export SET_CLOOG_VERSION=0.18.3;
+export SET_ISL_VERSION=0.14;
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01';
 
 # Make sure gcc is on the right remote branch 4.9.x
-cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch sm 4.9.3 && git checkout FETCH_HEAD && cd ../../build;
+cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch sm $SET_GCC_VERSION && git checkout FETCH_HEAD && cd ../../build;
 
 # Try to parallelize the build for faster performance.
 JOBS="$(cat /proc/cpuinfo | grep -c processor)";
@@ -63,6 +67,8 @@ else
     mkdir -p $PREFIX_PATH;
 fi;
 
+export GCC_INSTALLED=$PREFIX_PATH/bin/arm-eabi-gcc;
+
 # sysroot
 cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
@@ -70,16 +76,47 @@ export SYSROOT_DEST_PATH=$PREFIX_PATH;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH/arch-arm;
 
-#Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-eabi --program-transform-name='s&^&arm-eabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.3_arm-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-mpc-version=gnu --with-gdb-version=android --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --enable-plugins --enable-threads --enable-ld=default --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --disable-bootstrap --enable-eh-frame-hdr-for-static;
+# Build Configuration
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-eabi --program-transform-name='s&^&arm-eabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.3_arm-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-mpc-version=gnu --with-gdb-version=android --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-plugins --enable-threads --enable-ld=default --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --disable-bootstrap --enable-eh-frame-hdr-for-static;
 
-#Build the toolchain
+# Build and install cloog and isl libraries into the toolchain sysroot environment.
+
+# CLOOG
+export PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
+export PREFIX=--prefix=$PREFIX_PATH;
+
+cd ../cloog/cloog-$SET_CLOOG_VERSION;
+./configure $PREFIX;
+
+make $MAKE_FLAGS;
+make install;
+
+# cleanup
+rm -rf * && git reset --hard;
+
+# ISL
+
+cd ../../isl/isl-$SET_ISL_VERSION;
+./configure $PREFIX;
+
+make $MAKE_FLAGS;
+make install;
+
+# cleanup
+rm -rf * && git reset --hard;
+
+# make libs available for ld and cc
+export SYSROOT_LIB_PATH=$PREFIX_PATH/lib;
+export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
+export LIBRARY_PATH=$SYSROOT_LIB_PATH;
+
+cd ../../build;
+
+# Build the toolchain
 make $MAKE_FLAGS;
 
-#Install the toolchain (twice)
+# Install the toolchain (twice)
 make install && make install;
-
-GCC_INSTALLED=$PREFIX_PATH/bin/arm-eabi-gcc
 
 # Did we make it?
 if [ -e $GCC_INSTALLED ];
