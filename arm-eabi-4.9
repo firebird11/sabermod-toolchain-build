@@ -94,6 +94,11 @@ make install;
 # cleanup
 make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
 
+# untracked files
+rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.pc.in doc/gitversion.texi version.h isl/gitversion.h isl/include/isl/stdint.h isl/isl-uninstalled.pc isl/isl-uninstalled.sh isl/isl.pc isl/isl.pc.in;
+
+git reset --hard;
+
 # ISL
 
 export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
@@ -107,6 +112,11 @@ make install;
 
 # cleanup
 make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
+
+# untracked files
+rm -rf gitversion.h include/isl/stdint.h isl-uninstalled.pc isl-uninstalled.sh isl.pc isl.pc.in;
+
+git reset --hard;
 
 # make libs available for ld and cc
 export SYSROOT_LIB_PATH=$PREFIX_PATH/lib;
