@@ -34,10 +34,10 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch sm $SET_GCC_VERSION && git checkout FETCH_HEAD && cd ../../build;
 
 # Try to parallelize the build for faster performance.
-JOBS="$(cat /proc/cpuinfo | grep -c processor)";
+export JOBS="$(cat /proc/cpuinfo | grep -c processor)";
 
 # Determine Make flags
-MAKE_FLAGS=-j"$JOBS";
+export MAKE_FLAGS=-j"$JOBS";
 
 # Make a clean build
 if [ -e Makefile ];
@@ -76,47 +76,23 @@ export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH;
 
-# Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-eabi --program-transform-name='s&^&arm-eabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_arm-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-mpc-version=gnu --with-gdb-version=android --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-plugins --enable-threads --enable-ld=default --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --disable-bootstrap --enable-eh-frame-hdr-for-static;
-
 # Build and install cloog and isl libraries into the toolchain sysroot environment.
 
 # CLOOG
 export CLOOG_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
 export CLOOG_PREFIX=--prefix=$CLOOG_PREFIX_PATH;
 
-cd ../cloog/cloog-$SET_CLOOG_VERSION;
-./configure $CLOOG_PREFIX;
+cd ../cloog/cloog-$SET_CLOOG_VERSION && ./configure $CLOOG_PREFIX --with-isl=bundled --with-osl=bundled;
 
 make $MAKE_FLAGS;
 make install;
 
 # cleanup
-make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
+make $MAKE_FLAGS clean;
+make $MAKE_FLAGS distclean;
 
 # untracked files
 rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.pc.in doc/gitversion.texi version.h isl/gitversion.h isl/include/isl/stdint.h isl/isl-uninstalled.pc isl/isl-uninstalled.sh isl/isl.pc isl/isl.pc.in;
-
-git reset --hard;
-
-cd isl && git reset --hard;
-
-# ISL
-
-export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
-export ISL_PREFIX=--prefix=$ISL_PREFIX_PATH;
-
-cd ../../../isl/isl-$SET_ISL_VERSION;
-./configure $ISL_PREFIX;
-
-make $MAKE_FLAGS;
-make install;
-
-# cleanup
-make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
-
-# untracked files
-rm -rf gitversion.h include/isl/stdint.h isl-uninstalled.pc isl-uninstalled.sh isl.pc isl.pc.in;
 
 git reset --hard;
 
@@ -126,6 +102,9 @@ export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 export LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
 cd ../../build;
+
+# Build Configuration
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-eabi --program-transform-name='s&^&arm-eabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_arm-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-mpc-version=gnu --with-gdb-version=android --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-plugins --enable-threads --enable-ld=default --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --disable-bootstrap "--enable-eh-frame-hdr-for-static";
 
 # Build the toolchain
 make $MAKE_FLAGS;
