@@ -76,56 +76,36 @@ export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
 export SYSROOT=--with-sysroot=$SYSROOT_DEST_PATH;
 
-# Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --enable-eh-frame-hdr-for-static --enable-initfini-array --disable-bootstrap --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++;
-
-# Build and install cloog and isl libraries into the toolchain sysroot environment.
+# Build and install cloog, isl and osl libraries into the toolchain sysroot environment.
 
 # CLOOG
 export CLOOG_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
 export CLOOG_PREFIX=--prefix=$CLOOG_PREFIX_PATH;
 
-cd ../cloog/cloog-$SET_CLOOG_VERSION;
-./configure $CLOOG_PREFIX;
+# Cloog Build Configuration
+cd ../cloog/cloog-$SET_CLOOG_VERSION && ./configure $CLOOG_PREFIX --with-isl=bundled --with-osl=bundled;
 
 make $MAKE_FLAGS;
 make install;
 
 # cleanup
-make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
+make $MAKE_FLAGS clean;
+make $MAKE_FLAGS distclean;
 
 # untracked files
 rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.pc.in doc/gitversion.texi version.h isl/gitversion.h isl/include/isl/stdint.h isl/isl-uninstalled.pc isl/isl-uninstalled.sh isl/isl.pc isl/isl.pc.in;
 
 git reset --hard;
 
-cd isl && git reset --hard;
-
-# ISL
-
-export ISL_PREFIX_PATH=$SYSROOT_DEST_PATH/usr;
-export ISL_PREFIX=--prefix=$ISL_PREFIX_PATH;
-
-cd ../../../isl/isl-$SET_ISL_VERSION;
-./configure $ISL_PREFIX;
-
-make $MAKE_FLAGS;
-make install;
-
-# cleanup
-make $MAKE_FLAGS clean && make $MAKE_FLAGS distclean;
-
-# untracked files
-rm -rf gitversion.h include/isl/stdint.h isl-uninstalled.pc isl-uninstalled.sh isl.pc isl.pc.in;
-
-git reset --hard;
-
 # make libs available for ld and cc
-export SYSROOT_LIB_PATH=$PREFIX_PATH/lib;
+export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 export LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
 cd ../../build;
+
+# GCC Build Configuration
+./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.8.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' "--enable-eh-frame-hdr-for-static" --enable-initfini-array --disable-bootstrap --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++;
 
 # Build the toolchain
 make $MAKE_FLAGS;
