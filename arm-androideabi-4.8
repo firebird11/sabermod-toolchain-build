@@ -97,10 +97,9 @@ rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.
 
 git reset --hard;
 
-# make libs available for ld and cc
+# make libs available for ld
 export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
-export LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
 cd ../../build;
 
