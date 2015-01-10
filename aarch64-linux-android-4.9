@@ -18,12 +18,6 @@
 ###########################################################################
 ###########################################################################
 
-panic ()
-{
-    echo "ERROR: $@"
-    exit 1
-}
-
 # Some predefined configurations
 export SET_GCC_VERSION=aosp-4.9;
 export SET_CLOOG_VERSION=0.18.3;
@@ -98,26 +92,40 @@ rm -rf cloog-isl-uninstalled.pc cloog-isl-uninstalled.sh cloog-isl.pc cloog-isl.
 
 git reset --hard;
 
-# make libs available for ld and cc
+# make libs available for ld
 export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
-export LIBRARY_PATH=$SYSROOT_LIB_PATH;
+
+export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
+export SET_TARGET_BUILD=CLOOG;
 
 cd ../../build;
 
-# GCC Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-ld=default --disable-gold --enable-plugins --enable-threads --disable-option-checking --disable-bootstrap --disable-libmudflap --disable-libquadmath --disable-libsanitizer --enable-initfini-array "--enable-eh-frame-hdr-for-static" --enable-fix-cortex-a53-835769 --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++;
-
-# Build the toolchain
-make $MAKE_FLAGS;
-
-# Install the toolchain (twice)
-make install && make install;
-
 # Did we make it?
-if [ -e $GCC_INSTALLED ];
+if [ -e $CLOOG_INSTALLED ];
 then
-    echo "";
+    ./build-success;
+    sleep 5;
+
+    # GCC Build Configuration
+    ./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=aarch64-linux-android --program-transform-name='s&^&aarch64-linux-android-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-ld=default --disable-gold --enable-plugins --enable-threads --disable-option-checking --disable-bootstrap --disable-libmudflap --disable-libquadmath --disable-libsanitizer --enable-initfini-array "--enable-eh-frame-hdr-for-static" --enable-fix-cortex-a53-835769 --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++;
+
+    # Build the toolchain
+    make $MAKE_FLAGS;
+
+    # Install the toolchain (twice)
+    make install && make install;
+
+    export SET_TARGET_BUILD=GCC;
+
+    # Did we make it?
+    if [ -e $GCC_INSTALLED ];
+    then
+        ./build-success;
+        ./and-makefiles-aarch64;
+    else
+        ./build-failed;
+    fi;
 else
     ./build-failed;
 fi;
