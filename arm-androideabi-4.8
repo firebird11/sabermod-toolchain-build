@@ -121,6 +121,7 @@ then
     if [ -e $GCC_INSTALLED ];
     then
         ./build-success;
+        ./and-makefiles-arm;
     else
         ./build-failed;
     fi;
