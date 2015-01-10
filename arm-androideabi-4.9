@@ -101,23 +101,32 @@ git reset --hard;
 export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
+export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
+
 cd ../../build;
 
-# GCC Build Configuration
-./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' "--enable-eh-frame-hdr-for-static" --enable-initfini-array --disable-bootstrap --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++ --disable-libsanitizer;
-
-# Build the toolchain
-make $MAKE_FLAGS;
-
-# Install the toolchain (twice)
-make install && make install;
-
 # Did we make it?
-if [ -e $GCC_INSTALLED ];
+if [ -e $CLOOG_INSTALLED ];
 then
-    echo "";
+
+    # GCC Build Configuration
+    ./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-linux-androideabi --program-transform-name='s&^&arm-linux-androideabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_android-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=android --with-mpc-version=gnu --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --with-gold-version=android --enable-gold=default --enable-plugins --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' "--enable-eh-frame-hdr-for-static" --enable-initfini-array --disable-bootstrap --with-gxx-include-dir=$SYSROOT_DEST_PATH/c++ --disable-libsanitizer;
+
+    # Build the toolchain
+    make $MAKE_FLAGS;
+
+    # Install the toolchain (twice)
+    make install && make install;
+
+    # Did we make it?
+    if [ -e $GCC_INSTALLED ];
+    then
+        echo "";
+    else
+        ./build-failed;
+    fi;
 else
-    ./build-failed;
+    ./cloog-failed;
 fi;
 
 cd ../build-scripts;
