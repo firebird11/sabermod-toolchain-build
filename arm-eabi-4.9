@@ -18,12 +18,6 @@
 ###########################################################################
 ###########################################################################
 
-panic ()
-{
-    echo "ERROR: $@"
-    exit 1
-}
-
 # Some predefined configurations
 export SET_GCC_VERSION=4.9.3;
 export SET_CLOOG_VERSION=0.18.3;
@@ -102,12 +96,15 @@ export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
 export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
+export SET_TARGET_BUILD=CLOOG;
 
 cd ../../build;
 
 # Did we make it?
 if [ -e $CLOOG_INSTALLED ];
 then
+    ./build-success;
+    sleep 5;
 
     # GCC Build Configuration
     ./configure $PREFIX $SYSROOT --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=arm-eabi --program-transform-name='s&^&arm-eabi-&' --with-gcc-version=SaberMod --with-pkgversion='SaberMod-4.9.x_arm-graphite' --with-binutils-version=android --with-gmp-version=gnu --with-mpfr-version=gnu --with-mpc-version=gnu --with-gdb-version=android --with-cloog-version=$SET_CLOOG_VERSION --with-isl-version=$SET_ISL_VERSION --enable-graphite=yes --enable-plugins --enable-threads --enable-ld=default --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --disable-bootstrap "--enable-eh-frame-hdr-for-static";
@@ -118,15 +115,17 @@ then
     # Install the toolchain (twice)
     make install && make install;
 
+    export SET_TARGET_BUILD=GCC;
+
     # Did we make it?
     if [ -e $GCC_INSTALLED ];
     then
-        echo "";
+        ./build-success;
     else
         ./build-failed;
     fi;
 else
-    ./cloog-failed;
+    ./build-failed;
 fi;
 
 cd ../build-scripts;
