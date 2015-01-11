@@ -104,6 +104,9 @@ cd ../../build;
 # Did we make it?
 if [ -e $CLOOG_INSTALLED ];
 then
+
+    # Make a system link for older version of libisl using the newer version for older systems
+    ln -s $SYSROOT_LIB_PATH/libisl.so.13.1.0 $SYSROOT_LIB_PATH/libisl.so.10;
     ./build-success;
     sleep 5;
 
