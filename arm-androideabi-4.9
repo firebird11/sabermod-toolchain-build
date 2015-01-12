@@ -67,7 +67,7 @@ fi;
 export GCC_INSTALLED=$PREFIX_PATH/bin/arm-linux-androideabi-gcc;
 
 # sysroot
-cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
+cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd $BUILD_PATH;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
 export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
@@ -101,7 +101,7 @@ export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
 export SET_TARGET_BUILD=CLOOG;
 
-cd ../../build;
+cd $BUILD_PATH;
 
 # Did we make it?
 if [ -e $CLOOG_INSTALLED ];
