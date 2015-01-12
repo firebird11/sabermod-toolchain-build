@@ -27,6 +27,9 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # Make sure gcc is on the right remote branch 4.9.x
 cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch sm $SET_GCC_VERSION && git checkout FETCH_HEAD && cd ../../build;
 
+# Build PATH
+export BUILD_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+
 # Try to parallelize the build for faster performance.
 export JOBS="$(cat /proc/cpuinfo | grep -c processor)";
 
@@ -105,7 +108,7 @@ if [ -e $CLOOG_INSTALLED ];
 then
 
     # Make a system link for older version of libisl using the newer version for older systems
-    ln -s $SYSROOT_LIB_PATH/libisl.so.13.1.0 $SYSROOT_LIB_PATH/libisl.so.10;
+    cd $SYSROOT_LIB_PATH && ln -s libisl.so.13.1.0 libisl.so.10 && cd $BUILD_PATH;
     ./build-success;
     sleep 5;
 
