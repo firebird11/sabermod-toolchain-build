@@ -27,6 +27,9 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # Make sure gcc is on the right remote branch 4.9.x
 cd ../gcc/gcc-SaberMod && rm -rf * && git reset --hard && git fetch kecinzer $SET_GCC_VERSION && git checkout FETCH_HEAD && cd ../../build;
 
+# Build PATH
+export BUILD_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+
 # Try to parallelize the build for faster performance.
 export JOBS="$(cat /proc/cpuinfo | grep -c processor)";
 
@@ -64,7 +67,7 @@ fi;
 export GCC_INSTALLED=$PREFIX_PATH/bin/arm-eabi-gcc;
 
 # sysroot
-cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd ../build;
+cd ../sysroot && rm -rf * && git reset --hard && git fetch sm gcc-4.9 && git checkout FETCH_HEAD && cd $BUILD_PATH;
 export SYSROOT_SRC_PATH=../sysroot/arch-arm;
 export SYSROOT_DEST_PATH=$PREFIX_PATH/arch-arm;
 cp -R $SYSROOT_SRC_PATH -f $SYSROOT_DEST_PATH;
@@ -98,11 +101,14 @@ export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
 export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
 export SET_TARGET_BUILD=CLOOG;
 
-cd ../../build;
+cd $BUILD_PATH;
 
 # Did we make it?
 if [ -e $CLOOG_INSTALLED ];
 then
+
+    # Make a system link for older version of libisl using the newer version for older systems
+    cd $SYSROOT_LIB_PATH && ln -s libisl.so.13.1.0 libisl.so.10 && cd $BUILD_PATH;
     ./build-success;
     sleep 5;
 
