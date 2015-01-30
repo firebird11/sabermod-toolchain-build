@@ -127,6 +127,7 @@ then
     if [ -e $GCC_INSTALLED ];
     then
         ./build-success;
+        cp $TOOLCHAIN_ROOT_SYMBOLIC/build-scripts/.gitignore $PREFIX_PATH/.gitignore
     else
         ./build-failed;
     fi;
