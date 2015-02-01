@@ -140,6 +140,7 @@ then
     then
         ./build-success;
         ./and-makefiles-arm;
+        cp $TOOLCHAIN_ROOT_SYMBOLIC/build-scripts/.gitignore $PREFIX_PATH/.gitignore
     else
         ./build-failed;
     fi;
