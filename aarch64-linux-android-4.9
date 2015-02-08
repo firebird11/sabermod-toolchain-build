@@ -110,6 +110,7 @@ git reset --hard;
 # make libs available for ld
 export SYSROOT_LIB_PATH=$SYSROOT_DEST_PATH/usr/lib;
 export LD_LIBRARY_PATH=$SYSROOT_LIB_PATH;
+export LIBRARY_PATH=$SYSROOT_LIB_PATH;
 
 export CLOOG_INSTALLED=$SYSROOT_LIB_PATH/libcloog-isl.so.4
 export SET_TARGET_BUILD=CLOOG;
