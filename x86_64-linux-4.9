@@ -1,14 +1,18 @@
 #!/bin/bash
 
-# Copyright (C) 2014 The SaberMod Project
-# This file is free software; The SaberMod Project
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
+# Copyright (C) 2014-2015 The SaberMod Project
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
+#Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+
+#       http://www.apache.org/licenses/LICENSE-2.0
+
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 
 ###########################################################################
 ###########################################################################
@@ -63,7 +67,7 @@ else
     mkdir -p $PREFIX_PATH
 fi;
 
-./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=SaberMod --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' "--enable-eh-frame-hdr-for-static" --enable-initfini-array --disable-bootstrap;
+./configure $PREFIX --with-sysroot=/ --host=x86_64-linux-gnu --build=x86_64-linux-gnu --target=x86_64-linux-gnu --program-transform-name='s&^&x86_64-linux-&' --with-gcc-version=SaberMod --with-binutils-version=gnu --with-gmp-version=gnu --with-mpfr-version=gnu --with-gdb-version=gnu --with-mpc-version=gnu --with-cloog-version=0.18.3 --with-isl-version=0.14 --enable-graphite=yes --enable-plugins --enable-gold=default --with-gold-version=gnu --enable-threads --disable-option-checking --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' "--enable-eh-frame-hdr-for-static" --enable-initfini-array --disable-bootstrap --with-bugurl=mailto:sabermod.team@gmail.com;
 
 # Build the toolchain
 make $MAKE_FLAGS;
